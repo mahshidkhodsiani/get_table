@@ -1,0 +1,19 @@
+/* table , tr , th , td {
+    border: solid black;
+    border-collapse: collapse;
+} */
+
+th , td {
+    text-align: center;
+}
+
+.error{
+    color: rgb(5, 0, 0) ;
+    font-size: 20px;
+    
+}
+
+.success {
+    color: rgb(1, 3, 3) ;
+    font-size: 20px;
+}
