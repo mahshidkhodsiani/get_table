@@ -4,151 +4,133 @@ define("DIR", __DIR__);
 require_once DIR . "/connection/connect.php";
 
 
-//insert dataha
-if(isset($_GET['fn']) && $_GET["fn"] == "add"){
-    $firstName = $_GET["firstName"];
-    $lastName = $_GET["lastName"];
-    $Email = $_GET["Email"];
-    
-    $valid = true ;
-
-    if (empty($firstName) || 
-        empty($lastName) || 
-        empty($Email)) 
-        {
-        $message = "<p class='error'> please Enter completely.</p>";
-        $msgColor = "red";
-        $valid = false;
-    }
-
-    if(!filter_var($Email, FILTER_VALIDATE_EMAIL) && $valid ){
-        $message = "<p class='error'> please enter a valid Email. </p>";
-        $msgColor = "red";
-        $valid = false;
-    }
-
-
-
-    if($valid !== false){
-        $sql = "INSERT INTO student (firstName , lastName , Email) 
-                VALUES ('$firstName' , '$lastName' , '$Email')";
-
-        if($conn->query($sql) == true){
-            $message = "<p class='success'> your data successfully added </p>";
-            $msgColor = "green";
-        }else{
-            $message = "<p class='error'> sorry a problem happend </p>";
-            $msgColor = "red";
-        }
-    }else{
-        $fname = $firstName;
-        $lname = $lastName;
-        $email = $Email;
-    }
-    
-}
-/////////////////////////////////////////////
-
-
-
-
-//delet kardan
-if(isset($_GET['fn']) && $_GET['fn']=='del'){
-    $sql = "DELETE FROM student WHERE id={$_GET['Id']}";
-   
-   
-    if($conn->query($sql) == true){
-        $message = "<p class='success'> your data successfully deleted </p> ";
-        $msgColor = "green";
-    }else{
-        $message = "<p class='error'> sorry a problem happend </p> ";
-        $msgColor = "red";
-    }
-    
-}
-/////////////////////////////////////////////
-
-
 $disable = "";
-//marhale aval : gereftan etelaat az jadval database 
-if(isset($_GET['fn']) && $_GET['fn'] == 'edt'){
-
+switch($_REQUEST['fn']){
+    case "add":
+        $firstName = $_GET["firstName"];
+        $lastName = $_GET["lastName"];
+        $Email = $_GET["Email"];
+        
+        $valid = true ;
     
-    $sql = "SELECT * FROM student WHERE id ={$_GET['Id']}";
-    $result = $conn->query($sql);
-    
-    $class_id = $_GET['Id'];
-    $edit = true ;
-    $disable = "disabled";
-
-    if($result->num_rows > 0){
-        while($row = $result->fetch_assoc()){
-            $id    = $row['id'];
-            $fname = $row['firstName'];
-            $lname = $row['lastName'];
-            $email = $row['Email'];
+        if (empty($firstName) || 
+            empty($lastName) || 
+            empty($Email)) 
+            {
+            $message = "<p class='error'> please Enter completely.</p>";
+            $msgColor = "red";
+            $valid = false;
         }
-    }
-
-}
-/////////////////////////////////////////////
-
-
-//marhale dovom : gozashtan etelaat dar jadval
-if(isset($_GET['fn']) && $_GET['fn']== 'sve'){
     
-    $idedit    = $_GET['eId'];
-    $fnameedit = $_GET['firstName'];
-    $lnameedit = $_GET['lastName'];
-    $emailedit = $_GET['Email'];
-
-    $valid = true ;
-
-    if (empty($fnameedit) || 
-        empty($lnameedit) || 
-        empty($emailedit)) 
-        {
-        $message = "<p class='error'> please Enter completely.</p> ";
-        $msgColor = "red";
-        $valid = false;
-    }
-
-    if(!filter_var($emailedit, FILTER_VALIDATE_EMAIL) && $valid ){
-        $message = "<p class='error'> please enter a valid Email.</p>";
-        $msgColor = "red";
-        $valid = false;
-    }
-
-    if($valid !== false){
+        if(!filter_var($Email, FILTER_VALIDATE_EMAIL) && $valid ){
+            $message = "<p class='error'> please enter a valid Email. </p>";
+            $msgColor = "red";
+            $valid = false;
+        }
     
-        $sql = "UPDATE student SET firstName='$fnameedit', lastName='$lnameedit',Email='$emailedit' WHERE id={$idedit}";
+    
+    
+        if($valid !== false){
+            $sql = "INSERT INTO student (firstName , lastName , Email) 
+                    VALUES ('$firstName' , '$lastName' , '$Email')";
+    
+            if($conn->query($sql) == true){
+                $message = "<p class='success'> your data successfully added </p>";
+                $msgColor = "green";
+            }else{
+                $message = "<p class='error'> sorry a problem happend </p>";
+                $msgColor = "red";
+            }
+        }else{
+            $fname = $firstName;
+            $lname = $lastName;
+            $email = $Email;
+        }
+    break;
 
+    case "del":
+        $sql = "DELETE FROM student WHERE id={$_GET['Id']}";
+   
+    
         if($conn->query($sql) == true){
-            $message = "<p class='success'> your data successfully updated </p>";
+            $message = "<p class='success'> your data successfully deleted </p> ";
             $msgColor = "green";
         }else{
-            $message = "<p class='error'> sorry a problem happend.</p>";
+            $message = "<p class='error'> sorry a problem happend </p> ";
             $msgColor = "red";
         }
-    }else{
-        //hame chi kharab shode dobare emtehan konim
-        $class_id = $idedit ;
+    break;
+
+    case "edt":
+        $sql = "SELECT * FROM student WHERE id ={$_GET['Id']}";
+        $result = $conn->query($sql);
+        
+        $class_id = $_GET['Id'];
         $edit = true ;
         $disable = "disabled";
-        $id    = $idedit;
-        $fname = $fnameedit;
-        $lname = $lnameedit;
-        $email = $emailedit;
-    }
+    
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                $id    = $row['id'];
+                $fname = $row['firstName'];
+                $lname = $row['lastName'];
+                $email = $row['Email'];
+            }
+        }
+    break;
 
+    case "sve":
+        $idedit    = $_GET['eId'];
+        $fnameedit = $_GET['firstName'];
+        $lnameedit = $_GET['lastName'];
+        $emailedit = $_GET['Email'];
+    
+        $valid = true ;
+    
+        if (empty($fnameedit) || 
+            empty($lnameedit) || 
+            empty($emailedit)) 
+            {
+            $message = "<p class='error'> please Enter completely.</p> ";
+            $msgColor = "red";
+            $valid = false;
+        }
+    
+        if(!filter_var($emailedit, FILTER_VALIDATE_EMAIL) && $valid ){
+            $message = "<p class='error'> please enter a valid Email.</p>";
+            $msgColor = "red";
+            $valid = false;
+        }
+    
+        if($valid !== false){
+        
+            $sql = "UPDATE student SET firstName='$fnameedit', lastName='$lnameedit',Email='$emailedit' WHERE id={$idedit}";
+    
+            if($conn->query($sql) == true){
+                $message = "<p class='success'> your data successfully updated </p>";
+                $msgColor = "green";
+            }else{
+                $message = "<p class='error'> sorry a problem happend.</p>";
+                $msgColor = "red";
+            }
+        }else{
+            //hame chi kharab shode dobare emtehan konim
+            $class_id = $idedit ;
+            $edit = true ;
+            $disable = "disabled";
+            $id    = $idedit;
+            $fname = $fnameedit;
+            $lname = $lnameedit;
+            $email = $emailedit;
+        }
+    break;
 }
 
-/////////////////////////////////////////////
 
 
 
-// SELECT DATA
-// hamishe select mikonad
+
+// hamishe bayad anjam beshe
 $sql = "SELECT * FROM student";
 $result = $conn->query($sql);
 
@@ -157,8 +139,6 @@ if ($result->num_rows > 0) {
         $data[] = $row; 
     }
 }
-
-/////////////////////////////////////////////
 
 
 
