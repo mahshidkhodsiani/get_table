@@ -5,6 +5,7 @@ require_once DIR . "/connection/connect.php";
 
 
 $disable = "";
+
 switch($_REQUEST['fn']){
     case "add":
         $firstName = $_GET["firstName"];
@@ -124,22 +125,68 @@ switch($_REQUEST['fn']){
             $email = $emailedit;
         }
     break;
+
 }
 
 
 
 
+//search
+$where = "1";
+$url = "";
+if(isset($_REQUEST['ser']) && $_REQUEST['ser']=="search"){
+    
+    $url .= "&ser=search";
+    if(isset($_REQUEST['nsearch']) && !empty($_REQUEST['nsearch'])){
+        $name = $_REQUEST['nsearch'];
+        $where .= " AND firstName LIKE '%$name%' ";
+        $url .= "&nsearch=$name";
+    }
+
+    if(isset($_REQUEST['lsearch']) && !empty($_REQUEST['lsearch'])){
+        $last = $_REQUEST['lsearch'];
+        $where .= " AND lastName LIKE '%$last%' ";
+        $url .= "&lsearch=$last";
+    }
+}
+
+
 
 // hamishe bayad anjam beshe
-$sql = "SELECT * FROM student";
+$count = 10 ;
+$page = $_REQUEST['page'];
+
+if(empty($page)){
+    $page = 0;
+}
+
+$start = $page * $count ; 
+
+$sql = "SELECT count(id) as stid FROM student WHERE $where ";
 $result = $conn->query($sql);
 
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        $sum = $row['stid']; 
+    }
+}
+
+$pages = floor( $sum / $count );
+if($sum % $count == 0){
+    $pages = $pages -1 ;
+}
+
+// select asli
+$sql = "SELECT * FROM student 
+    WHERE $where
+    ORDER BY reg_date DESC
+    LIMIT $start , $count";
+$result = $conn->query($sql);
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         $data[] = $row; 
     }
 }
-
 
 
 
@@ -152,8 +199,9 @@ if ($result->num_rows > 0) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./materialaize/materialaize1.css"> 
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="./css/style.css">
-    <title>Document</title>
+    <title>get</title>
     
 </head>
 <body>
@@ -179,15 +227,15 @@ if ($result->num_rows > 0) {
                         </div>
                         <div class="row">
                             <div class="col s12"> 
-                                <input type="submit" value="submit" id="add_id" class="waves-effect waves-light btn" <?php echo @$disable; ?> >     
+                                <input type="submit" value="submit" id="add_id" class="black-text waves-light btn" <?php echo @$disable; ?> >     
                                 
                                 
                                 <?php
                                 if($edit == true){ // faze edit hastim
-                                    echo "<input type='submit' value='save' class='waves-effect waves-light btn'>";
+                                    echo "<input type='submit' value='save' class='black-text waves-light btn'>";
                                     echo "<input type='hidden' value='sve' name='fn'>";
                                     echo "<input type='hidden' value='{$id}' name='eId'>";
-                                    echo "<a href='index.php' style='color:black;margin-left: 5px;' id='aId' class='waves-effect waves-light btn'>cancel</a> ";
+                                    echo "<a href='index.php?page=$page$url' style='color:black;margin-left: 5px;' id='aId' class='black-text waves-light btn'>cancel</a> ";
                                 }else{
                                     echo "<input type='hidden' value='add' name='fn'>";
                                 }
@@ -224,6 +272,37 @@ if ($result->num_rows > 0) {
     <br>
 
     <div class="row">
+        <div class="col s12">
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">Search</span>
+                    <form method="GET">
+                        <div class="row">
+                            <div class="input-field col s12 m6">
+                                <input type="text" name="nsearch" value="<?php echo $_REQUEST['nsearch']; ?>" placeholder="search your name">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="input-field col s12 m6">
+                                <input type="text" name="lsearch" value="<?php echo $_REQUEST['lsearch']; ?>" placeholder="search your last name">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input type="submit" value="search" name="ser" class="black-text waves-light btn" >
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row">
         <div class="col s12 ">
             <div class="card">
                 <div class="card-content">
@@ -240,6 +319,7 @@ if ($result->num_rows > 0) {
                         </tr>
                         <?php  
                             
+                            $a =$start + 1;
                             foreach ($data as $d) {
 
                                 
@@ -251,22 +331,52 @@ if ($result->num_rows > 0) {
 
                                 echo "<tr class='$class'>  
 
-                                <td>  {$d["id"]}  </td>
+                                <td>   $a  </td>
                                 <td>  {$d["firstName"]} </td>
                                 <td>  {$d["lastName"] } </td>
                                 <td>  {$d["Email"] } </td>
                                 <td>  {$d["reg_date"] } </td>
                                 <td> 
-                                    <a href='index.php?fn=del&Id={$d['id']}'>delete</a>
+                                    <a  href='index.php?fn=del&Id={$d['id']}&page=$page$url'><i class='material-icons red-text'>delete_forever</i></a>
                                 </td>
                                 <td>
-                                    <a href='index.php?fn=edt&Id={$d['id']}'>edit</a> 
+                                    <a href='index.php?fn=edt&Id={$d['id']}&page=$page$url'><i class='material-icons green-text'>edit</i></a> 
                                 </td>
                                 </tr>";
+
+                                $a++;
                             }
                             
                         ?>
                     </table>
+
+                    
+                    <?php
+
+
+                    if($page ==0){
+                        $disable = "disabled";
+                    }
+                    if($page == $pages){
+                        $dis = "disabled";
+                    }
+
+                    echo "<ul class='pagination center-align'>";
+                    echo "<li class='$disable'><a href='?page=".($page-1).$url."'><i class='material-icons'>chevron_left</i></a></li>";
+                    for($i= 0 ; $i <= $pages ; $i++){
+
+                        if($page == $i){
+                            $ac = "active";
+                        }else{
+                            $ac = "";
+                        }
+
+
+                        echo "<li class='$ac'> <a href='?page=$i$url'>". ($i+1) ."</a> </li>" ;
+                    }
+                    echo "<li class='$dis'><a href='?page=".($page+1).$url."'><i class='material-icons'>chevron_right</i></a></li>";
+                    echo "</ul>";
+                    ?>
                 </div>
             </div>
         </div>
