@@ -11,6 +11,12 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+function Cfilter($a){
+    global $conn;
+    $b = $conn->real_escape_string($a);
+    return $b;
+}
+
 /*
 CONNECTION
 */

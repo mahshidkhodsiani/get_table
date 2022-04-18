@@ -8,9 +8,9 @@ $disable = "";
 
 switch($_REQUEST['fn']){
     case "add":
-        $firstName = $_GET["firstName"];
-        $lastName = $_GET["lastName"];
-        $Email = $_GET["Email"];
+        $firstName = Cfilter($_GET["firstName"]);
+        $lastName =Cfilter($_GET["lastName"]);
+        $Email = Cfilter($_GET["Email"]);
         
         $valid = true ;
     
@@ -63,10 +63,11 @@ switch($_REQUEST['fn']){
     break;
 
     case "edt":
-        $sql = "SELECT * FROM student WHERE id ={$_GET['Id']}";
+        $ed_id = Cfilter($_GET['Id']);
+        $sql = "SELECT * FROM student WHERE id ={$ed_id}";
         $result = $conn->query($sql);
         
-        $class_id = $_GET['Id'];
+        $class_id =Cfilter($_GET['Id']);
         $edit = true ;
         $disable = "disabled";
     
@@ -81,10 +82,10 @@ switch($_REQUEST['fn']){
     break;
 
     case "sve":
-        $idedit    = $_GET['eId'];
-        $fnameedit = $_GET['firstName'];
-        $lnameedit = $_GET['lastName'];
-        $emailedit = $_GET['Email'];
+        $idedit    = Cfilter($_GET['eId']);
+        $fnameedit = Cfilter($_GET['firstName']);
+        $lnameedit = Cfilter($_GET['lastName']);
+        $emailedit = Cfilter($_GET['Email']);
     
         $valid = true ;
     
@@ -134,22 +135,27 @@ switch($_REQUEST['fn']){
 //search
 $where = "1";
 $url = "";
-if(isset($_REQUEST['ser']) && $_REQUEST['ser']=="search"){
+if(isset ($_REQUEST['ser']) && $_REQUEST['ser']=="search"){
     
     $url .= "&ser=search";
     if(isset($_REQUEST['nsearch']) && !empty($_REQUEST['nsearch'])){
-        $name = $_REQUEST['nsearch'];
+        $name = Cfilter($_REQUEST['nsearch']);
         $where .= " AND firstName LIKE '%$name%' ";
         $url .= "&nsearch=$name";
     }
+    
 
     if(isset($_REQUEST['lsearch']) && !empty($_REQUEST['lsearch'])){
-        $last = $_REQUEST['lsearch'];
+        $last = Cfilter($_REQUEST['lsearch']);
         $where .= " AND lastName LIKE '%$last%' ";
         $url .= "&lsearch=$last";
     }
 }
-
+// $sql = "SELECT * FROM student 
+//     WHERE $where
+//     ORDER BY reg_date DESC";
+// echo $sql;
+// die;
 
 
 // hamishe bayad anjam beshe
