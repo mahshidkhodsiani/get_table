@@ -150,6 +150,12 @@ if(isset ($_REQUEST['ser']) && $_REQUEST['ser']=="search"){
         $where .= " AND lastName LIKE '%$last%' ";
         $url .= "&lsearch=$last";
     }
+
+    if(isset($_REQUEST['esearch']) && !empty($_REQUEST['esearch'])){
+        $semail = Cfilter($_REQUEST['esearch']);
+        $where .= " AND Email LIKE '%$semail%' ";
+        $url .= "&esearch=$semail";
+    }
 }
 // $sql = "SELECT * FROM student 
 //     WHERE $where
@@ -168,12 +174,16 @@ if(empty($page)){
 
 $start = $page * $count ; 
 
-$sql = "SELECT count(id) as stid FROM student WHERE $where ";
-$result = $conn->query($sql);
+$sum = $_REQUEST['sum'];
 
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        $sum = $row['stid']; 
+if (empty($sum)){
+    $sql = "SELECT count(id) as stid FROM student WHERE $where ";
+    $result = $conn->query($sql);
+    
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $sum = $row['stid']; 
+        }
     }
 }
 
@@ -281,22 +291,26 @@ if ($result->num_rows > 0) {
         <div class="col s12">
             <div class="card">
                 <div class="card-content">
-                    <span class="card-title">Search</span>
+                   
                     <form method="GET">
                         <div class="row">
                             <div class="input-field col s12 m6">
                                 <input type="text" name="nsearch" value="<?php echo $_REQUEST['nsearch']; ?>" placeholder="search your name">
                             </div>
-                        </div>
+                        
 
-                        <div class="row">
                             <div class="input-field col s12 m6">
                                 <input type="text" name="lsearch" value="<?php echo $_REQUEST['lsearch']; ?>" placeholder="search your last name">
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="input-field col s12">
+                            <div class="input-field col s12 m6">
+                                <input type="text" name="esearch" value="<?php echo $_REQUEST['esearch']; ?>" placeholder="search your Email">
+                            </div>
+                        
+
+                            <div class="input-field col s12 m6">
                                 <input type="submit" value="search" name="ser" class="black-text waves-light btn" >
                             </div>
                         </div>
@@ -346,7 +360,7 @@ if ($result->num_rows > 0) {
                                     <a  href='index.php?fn=del&Id={$d['id']}&page=$page$url'><i class='material-icons red-text'>delete_forever</i></a>
                                 </td>
                                 <td>
-                                    <a href='index.php?fn=edt&Id={$d['id']}&page=$page$url'><i class='material-icons green-text'>edit</i></a> 
+                                    <a href='index.php?sum=$sum&fn=edt&Id={$d['id']}&page=$page$url'><i class='material-icons green-text'>edit</i></a> 
                                 </td>
                                 </tr>";
 
@@ -368,7 +382,7 @@ if ($result->num_rows > 0) {
                     }
 
                     echo "<ul class='pagination center-align'>";
-                    echo "<li class='$disable'><a href='?page=".($page-1).$url."'><i class='material-icons'>chevron_left</i></a></li>";
+                    echo "<li class='$disable'><a href='?sum=$sum&page=".($page-1).$url."'><i class='material-icons'>chevron_left</i></a></li>";
                     for($i= 0 ; $i <= $pages ; $i++){
 
                         if($page == $i){
@@ -378,9 +392,9 @@ if ($result->num_rows > 0) {
                         }
 
 
-                        echo "<li class='$ac'> <a href='?page=$i$url'>". ($i+1) ."</a> </li>" ;
+                        echo "<li class='$ac'> <a href='?sum=$sum&page=$i$url'>". ($i+1) ."</a> </li>" ;
                     }
-                    echo "<li class='$dis'><a href='?page=".($page+1).$url."'><i class='material-icons'>chevron_right</i></a></li>";
+                    echo "<li class='$dis'><a href='?sum=$sum&page=".($page+1).$url."'><i class='material-icons'>chevron_right</i></a></li>";
                     echo "</ul>";
                     ?>
                 </div>
