@@ -1,6 +1,7 @@
 <?php
 define("DIR", __DIR__);
 
+
 require_once DIR . "/connection/connect.php";
 require_once DIR . "/global.php";
 
@@ -136,9 +137,8 @@ $url = "";
 
 if(isset ($_REQUEST['ser']) && $_REQUEST['ser']=="search"){
 
-  
-    
     $url .= "&ser=search";
+    
     if(isset($_REQUEST['nsearch']) && !empty($_REQUEST['nsearch'])){
         $name = Cfilter($_REQUEST['nsearch']);
         $where .= " AND firstName LIKE '%$name%' ";
@@ -210,14 +210,11 @@ $pagination = paging($page, $pages, $sum, $url);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./materialaize/materialaize1.css"> 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="./css/style.css">
     <title>get</title>
 
     <style>
-        .btn-floating{
-            margin: 5px;
-        }
+        
     </style>
     
 </head>
@@ -229,37 +226,30 @@ $pagination = paging($page, $pages, $sum, $url);
 
 
 <?php
-        if(isset($message)){
-            echo "<div class='row '>
-            <div class='col s12 m6'>
-            <div class='card $msgColor'>
-            <div class='card-content'>
-            $message 
-            </div>
-            </div>
-                    </div>
-                </div> " ;
-        }
-           
-        ?>
+    if(isset($message)){
+        echo "<div class='row center-align'>
+                <div class='col s12 m4 ms'>
+                    <div class='card $msgColor'>
                 
-    
-    <br>
-    
-   
-                   
-    
-    
-    
-    <br>
+                    $message 
+                
+                    </div>
+                </div>
+            </div> " ;
+    }
+        
+?>
+                
+  <br>
     
     <div class="row">
         <div class="col s12 ">
             <div class="card">
                 <div class="card-content">
-                    <a class="btn-floating waves-light btn modal-trigger btn-large right" href="#modal2"><i class="material-icons">search</i></a>
-
-                    <a class="btn-floating waves-light btn modal-trigger right btn-large" href="#modal1"><i class="material-icons">add</i></a>
+                    
+                    <a class="btn-floating waves-light  modal-trigger right" href="#modal2"><i class="material-icons">search</i></a>
+                    <a class="btn-floating waves-light btn modal-trigger right " href="#modal1"><i class="material-icons">add</i></a>
+                    
                     <span class="card-title">Checking Information</span>
                     <table>
                         <tr >
@@ -276,8 +266,7 @@ $pagination = paging($page, $pages, $sum, $url);
                             $a =$start + 1;
                             foreach ($data as $d) {
                                 
-                                
-                                if( $d['id'] == $class_id) {
+                                if ($d['id'] == $class_id) {
                                     $class = "pink lighten-3";
                                 }else{
                                     $class = "";
@@ -291,11 +280,10 @@ $pagination = paging($page, $pages, $sum, $url);
                                 <td>  {$d["Email"] } </td>
                                 <td>  {$d["reg_date"] } </td>
                                 <td> 
-                                <a  href='index.php?fn=del&Id={$d['id']}&page=$page$url'><i class='material-icons red-text'>delete_forever</i></a>
+                                <a href='index.php?fn=del&Id={$d['id']}&page=$page$url'><i class='material-icons red-text'>delete_forever</i></a>
                                 </td>
                                 <td>
-
-                                <a id='e' href='index.php?sum=$sum&fn=edt&Id={$d['id']}&page=$page$url'><i class='material-icons green-text'>edit</i></a> 
+                                <a  href='index.php?sum=$sum&fn=edt&Id={$d['id']}&page=$page$url'><i class='material-icons green-text'>edit</i></a> 
                                 </td>
                                 </tr>";
                                 
@@ -311,7 +299,7 @@ $pagination = paging($page, $pages, $sum, $url);
             </div>
         </div>
     </div>
-</div>
+
 
 
 
@@ -397,7 +385,7 @@ $pagination = paging($page, $pages, $sum, $url);
         var elem = document.getElementById('modal1');
           
         // var elems = document.querySelectorAll('.modal');
-        options = { inDuration : 1000 , outDuration:1000 , dismissible: true , endingTop:'30%'};
+        options = { inDuration : 100 , outDuration:100 , dismissible: true , endingTop:'30%'};
         var instance = M.Modal.init(elem, options);
 
         <?php 
@@ -409,7 +397,7 @@ $pagination = paging($page, $pages, $sum, $url);
         var elem = document.getElementById('modal2');
           
         
-        options = { inDuration : 1000 , outDuration:1000 , dismissible: true , endingTop:'30%'};
+        options = { inDuration : 100 , outDuration:100 , dismissible: true , endingTop:'30%'};
         var instance = M.Modal.init(elem, options);
 
     });
@@ -417,6 +405,7 @@ $pagination = paging($page, $pages, $sum, $url);
         
    
 </script>
+</div>
     <script src="./materialaize/materialize2.js"></script>
 </body>
 </html>

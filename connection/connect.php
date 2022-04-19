@@ -20,7 +20,7 @@ function Cfilter($a){
 
 function fetch_query($sql){
     global $conn ;
-    $data = array();
+    $data = array();//agar por nabashe pas khali bashe
     $res = $conn->query($sql);  
     if ($res->num_rows > 0) {
         while($row = $res->fetch_assoc()) {
