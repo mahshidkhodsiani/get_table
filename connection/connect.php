@@ -17,6 +17,20 @@ function Cfilter($a){
     return $b;
 }
 
+
+function fetch_query($sql){
+    global $conn ;
+    $data = array();
+    $res = $conn->query($sql);  
+    if ($res->num_rows > 0) {
+        while($row = $res->fetch_assoc()) {
+            $data[] = $row; 
+        }
+    }
+    
+    return $data ;
+}
+
 /*
 CONNECTION
 */
